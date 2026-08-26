@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # Parâmetros estruturais (Não alterar)
 T0 = 2.0
 t = np.arange(0, 2.001, 0.001)
-N = 19
+N = 50
 
 def calcular_frequencia_fundamental(T0):
     w0 = 2 * np.pi / T0
@@ -22,16 +22,13 @@ def gerar_sinal_ideal(t):
     return np.where(condicao, 1.0, -1.0)
 
 def aproximar_fourier(t, w0, N):
-    """
-    Retorna o vetor de aproximação g_approx com N harmônicos
-    e a potência acumulada PN usando o Teorema de Parseval.
-    O loop deve varrer apenas os harmônicos ímpares de 1 até N.
-    """
-    # TODO: Inicialize os vetores e acumule as componentes cossenoidais
-    # e a potência média PN pelo Teorema de Parseval.
-    g_approx = None
-    PN = None
-    return g_approx, PN
+    g_approx = np.zeros_like(t)
+
+    for n in range(1, N+1, 2):
+        a_n = (4 * np.sin(n * np.pi / 2) / (n * np.pi))
+        g_approx += a_n * np.cos(n * w0 * t)
+    
+    return g_approx
 
 def calcular_mse(g_ideal, g_approx):
     """
@@ -41,12 +38,14 @@ def calcular_mse(g_ideal, g_approx):
     mse = None
     return mse
 
-def plot_g_ideal(t):
+def plot(t):
     g = gerar_sinal_ideal(t)
+    g_approx = aproximar_fourier(t, w0, N)
 
     plt.figure(figsize=(8, 4))
     plt.plot(t, g, label='g(t) ideal', color='blue', linewidth=2)
-    plt.title('Sinal Quadrado Ideal')
+    plt.plot(t, g_approx, label='g(t) aproximado', color='red', linewidth=2)
+    plt.title(f'Sinal Quadrado Ideal x Sinal Quadrado Aproximado por Fourier (N = {N})')
     plt.xlabel('Tempo (t)')
     plt.ylabel('Amplitude')
     plt.ylim(-1.5, 1.5)
@@ -57,10 +56,10 @@ def plot_g_ideal(t):
 # Se o script for executado diretamente, mostra os resultados no console
 if __name__ == "__main__":
     w0 = calcular_frequencia_fundamental(T0)
-    g_ideal = gerar_sinal_ideal(t)
+    g_ideal = None
 
     t_vetor = np.linspace(0, 2, 2001)
-    plot_g_ideal(t)
+    plot(t)
 
     if w0 is not None and g_ideal is not None:
         g_approx, PN = aproximar_fourier(t, w0, N)
