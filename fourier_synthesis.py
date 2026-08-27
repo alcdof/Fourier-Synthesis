@@ -1,7 +1,3 @@
-# Disclaimer: This code isn't my intellectual property. The base code (this file) was made 
-# by my Communication Systems' teacher: Giovanni Alfredo Guarneri. 
-# I've just added/improved some of the functions that are below.
-
 import numpy as np
 import matplotlib.pyplot as plt
 
